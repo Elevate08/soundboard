@@ -19,6 +19,14 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out Repo
         uses: actions/checkout@v2
@@ -39,8 +47,10 @@ jobs:
         with:
           context: ./
           file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/soundboard:latest
+          cache-from: type=local,dest=/tmp/.buildx-cache
       
       - name: Image digest
         run: echo ${{ steps.docker_build.output.digest }}
