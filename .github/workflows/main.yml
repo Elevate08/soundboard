@@ -56,7 +56,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/soundboard:latest
-            ${{ secrets.DOCKER_HUB_USERNAME }}/soundboard:${{ VERSION }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/soundboard:${{ steps.get_version.outputs.VERSION }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       
