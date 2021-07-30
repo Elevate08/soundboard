@@ -44,7 +44,7 @@ jobs:
 
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=tag::$(echo {GITHUB_REF:10})
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
         
       - name: Build and push
         id: docker_build
@@ -56,7 +56,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/soundboard:latest
-            ${{ secrets.DOCKER_HUB_USERNAME }}/soundboard:${{ steps.get_version.outputs.tag }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/soundboard:${{ steps.get_version.outputs.VERSION }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       
