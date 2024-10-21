@@ -1,0 +1,11 @@
+{
+  "lock": false,
+  "tasks": {
+    "dev": "deno run --watch main.js"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1",
+    "express": "npm:express",
+    "multer": "npm:multer"
+  }
+}
