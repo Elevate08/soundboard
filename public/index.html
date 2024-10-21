@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <title>Sound Buttons</title>
+  </head>
+  <body>
+    <h1>Soundboard</h1>
+    <!-- Form to upload new audio files -->
+    <div id="sounds-buttons"></div>
+
+    <script>
+      function cleanFileName(fileName) {
+        // Remove the extension
+        const fileWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
+
+        // Remove special characters (keep letters, numbers, spaces, dashes, and underscores)
+        //const sanitizedFileName = fileWithoutExtension.replace(
+        //  /[^a-zA-Z0-9 _-]/g,
+        //  "",
+        //);
+        // Replace dashes and underscores with spaces
+        const prettyFileName = fileWithoutExtension.replace(/[_-]/g, " ");
+
+        return prettyFileName;
+      }
+
+      function fetchSoundFiles() {
+        // Fetch the list of sounds files from the backend
+        fetch("/sounds-files")
+          .then((response) => response.json())
+          .then((soundsFiles) => {
+            const container = document.getElementById("sounds-buttons");
+            soundsFiles.forEach((file) => {
+              // Create a button for each sounds file
+              const button = document.createElement("button");
+              button.textContent = cleanFileName(file);
+              button.onclick = () => {
+                const sounds = new Audio(`/sounds/${file}`);
+                sounds.play();
+              };
+              container.appendChild(button);
+            });
+          });
+      }
+
+      // Initial fetch of sound files when page loads
+      fetchSoundFiles();
+
+      // Handle file upload form submission
+      const uploadForm = document.getElementById("uploadForm");
+      uploadForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        const formData = new FormData(uploadForm);
+
+        fetch("/upload-audio", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.text())
+          .then((result) => {
+            console.log(result);
+            fetchAudioFiles(); // Refresh the audio buttons after upload
+          })
+          .catch((error) => {
+            console.error("Error uploading file:", error);
+          });
+      });
+    </script>
+    <br /><br /><br />
+    <h2>Upload New Sounds</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="file" id="fileInput" name="audioFile" accept="audio/*" />
+      <button type="submit">Upload</button>
+    </form>
+  </body>
+</html>
