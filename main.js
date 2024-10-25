@@ -32,7 +32,7 @@ const upload = multer({
     const filetypes = /mp3|wav|ogg/;
     const mimetypes = /audio\/(mpeg|wav|ogg)/;
     const extname = filetypes.test(
-      path.extname(file.originalname).toLowerCase()
+      path.extname(file.originalname).toLowerCase(),
     );
     const mimetype = mimetypes.test(file.mimetype);
     if (extname && mimetype) {
@@ -46,9 +46,9 @@ const upload = multer({
 // Endpoint to upload audio files
 app.post("/upload-audio", upload.single("audioFile"), (req, res) => {
   if (!req.file) {
-    return res.status(400).send("No file uploaded.");
+    return res.status(400).json("No file uploaded.");
   }
-  res.status(200).send("File uploaded successfully.");
+  res.status(200).json("File uploaded successfully.");
 });
 
 // Endpoint to list sounds files
@@ -60,9 +60,10 @@ app.get("/sounds-files", (req, res) => {
     // Filter sounds files with .mp3 or .wav extension
     const soundsFiles = files.filter(
       (file) =>
-        file.endsWith(".mp3") || file.endsWith(".wav") || file.endsWith(".ogg")
+        file.endsWith(".mp3") || file.endsWith(".wav") || file.endsWith(".ogg"),
     );
-    res.json(soundsFiles); // Send the list of files to the client
+    const sortedSoundFiles = soundsFiles.sort();
+    res.json(sortedSoundFiles); // Send the list of files to the client
   });
 });
 
@@ -136,6 +137,13 @@ app.get("/dynamic-styles.css", (req, res) => {
           border-color: ${buttonBorderColor};
         }
     `);
+});
+
+app.get("/config", (req, res) => {
+  res.json({
+    maxAudioDuration: process.env.MAX_AUDIO_DURATION || 15,
+    maxConcurrentAudio: process.env.MAX_CONCURRENT_AUDIO || 1,
+  });
 });
 
 // Start the server
