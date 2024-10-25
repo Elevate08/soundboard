@@ -32,7 +32,7 @@ const upload = multer({
     const filetypes = /mp3|wav|ogg/;
     const mimetypes = /audio\/(mpeg|wav|ogg)/;
     const extname = filetypes.test(
-      path.extname(file.originalname).toLowerCase(),
+      path.extname(file.originalname).toLowerCase()
     );
     const mimetype = mimetypes.test(file.mimetype);
     if (extname && mimetype) {
@@ -59,7 +59,8 @@ app.get("/sounds-files", (req, res) => {
     }
     // Filter sounds files with .mp3 or .wav extension
     const soundsFiles = files.filter(
-      (file) => file.endsWith(".mp3") || file.endsWith(".wav"),
+      (file) =>
+        file.endsWith(".mp3") || file.endsWith(".wav") || file.endsWith(".ogg")
     );
     res.json(soundsFiles); // Send the list of files to the client
   });
@@ -68,11 +69,8 @@ app.get("/sounds-files", (req, res) => {
 app.get("/dynamic-styles.css", (req, res) => {
   const backgroundColor = process.env.background_color || "#023e8a"; // Default color
   const fontColor = process.env.font_color || "#caf0f8"; // Default color
-  const uploadBackgroundColor =
-    process.env.upload_background_color || "#0077b6"; // Default color
   const buttonBackgroundColor =
     process.env.button_background_color || "#0077b6"; // Default color
-  const buttonFontColor = process.env.button_font_color || "#caf0f8"; // Default color
   const buttonBorderColor = process.env.button_border_color || "#00b4d8"; // Default color
 
   // Set the content type to CSS
@@ -90,12 +88,16 @@ app.get("/dynamic-styles.css", (req, res) => {
           text-align: center;
         }
         
+        form,
+        #sounds-buttons > button {
+          background: ${buttonBackgroundColor};
+        }
+
         form {
           flex: 1 1 auto;
           width: fit-content;
           text-align: center;
           font-size: 40px;
-          background: ${uploadBackgroundColor};
           border-radius: 10px;
           border: 1px solid;
           margin: 3px;
@@ -125,13 +127,12 @@ app.get("/dynamic-styles.css", (req, res) => {
           font-size: 30px;
           width: 400px;
           height: 200px;
-          background: ${buttonBackgroundColor};
           border-radius: 10px;
           border: 3px solid;
           margin: 3px;
           align-items: center;
           justify-content: center;
-          color: ${buttonFontColor};
+          color: ${fontColor};
           border-color: ${buttonBorderColor};
         }
     `);

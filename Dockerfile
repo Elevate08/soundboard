@@ -10,9 +10,7 @@ USER deno
 
 ENV background_color=#023e8a
 ENV font_color=#caf0f8
-ENV upload_background_color=#0077b6
 ENV button_background_color=#0077b6
-ENV button_font_color=#caf0f8
 ENV button_border_color=#00b4d8
 
 # Cache the dependencies as a layer (the following two steps are re-run only when deno.json modified).
