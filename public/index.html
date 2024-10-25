@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/dynamic-styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
@@ -15,6 +15,12 @@
     <!-- Form to upload new audio files -->
     <div id="sounds-buttons"></div>
 
+    <br /><br /><br />
+    <h2>Upload New Sounds</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="file" id="fileInput" name="audioFile" accept="audio/*" />
+      <button type="submit">Upload</button>
+    </form>
     <script>
       function cleanFileName(fileName) {
         // Remove the extension
@@ -37,6 +43,8 @@
           .then((response) => response.json())
           .then((soundsFiles) => {
             const container = document.getElementById("sounds-buttons");
+            // Clear previous buttons to avoid duplicates
+            container.innerHTML = "";
             soundsFiles.forEach((file) => {
               // Create a button for each sounds file
               const button = document.createElement("button");
@@ -67,18 +75,13 @@
           .then((response) => response.text())
           .then((result) => {
             console.log(result);
-            fetchAudioFiles(); // Refresh the audio buttons after upload
+            uploadForm.reset(); // Reset the form to clear the file input
+            fetchSoundFiles(); // Refresh the audio buttons after upload
           })
           .catch((error) => {
             console.error("Error uploading file:", error);
           });
       });
     </script>
-    <br /><br /><br />
-    <h2>Upload New Sounds</h2>
-    <form id="uploadForm" enctype="multipart/form-data">
-      <input type="file" id="fileInput" name="audioFile" accept="audio/*" />
-      <button type="submit">Upload</button>
-    </form>
   </body>
 </html>

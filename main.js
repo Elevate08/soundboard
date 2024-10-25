@@ -30,10 +30,11 @@ const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
     const filetypes = /mp3|wav|ogg/;
+    const mimetypes = /audio\/(mpeg|wav|ogg)/;
     const extname = filetypes.test(
       path.extname(file.originalname).toLowerCase(),
     );
-    const mimetype = filetypes.test(file.mimetype);
+    const mimetype = mimetypes.test(file.mimetype);
     if (extname && mimetype) {
       return cb(null, true);
     } else {
@@ -62,6 +63,78 @@ app.get("/sounds-files", (req, res) => {
     );
     res.json(soundsFiles); // Send the list of files to the client
   });
+});
+
+app.get("/dynamic-styles.css", (req, res) => {
+  const backgroundColor = process.env.background_color || "#023e8a"; // Default color
+  const fontColor = process.env.font_color || "#caf0f8"; // Default color
+  const uploadBackgroundColor =
+    process.env.upload_background_color || "#0077b6"; // Default color
+  const buttonBackgroundColor =
+    process.env.button_background_color || "#0077b6"; // Default color
+  const buttonFontColor = process.env.button_font_color || "#caf0f8"; // Default color
+  const buttonBorderColor = process.env.button_border_color || "#00b4d8"; // Default color
+
+  // Set the content type to CSS
+  res.setHeader("Content-Type", "text/css");
+
+  // Generate CSS dynamically
+  res.send(`
+        body {
+          background: ${backgroundColor};
+          width: auto;
+          height: auto;
+          color: ${fontColor};
+        }
+        body > h1 {
+          text-align: center;
+        }
+        
+        form {
+          flex: 1 1 auto;
+          width: fit-content;
+          text-align: center;
+          font-size: 40px;
+          background: ${uploadBackgroundColor};
+          border-radius: 10px;
+          border: 1px solid;
+          margin: 3px;
+          padding-top: 3px;
+          padding-bottom: 7px;
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+        form > #fileInput {
+          font-size: 30px;
+        }
+        
+        form > button {
+          font-size: 30px;
+        }
+        
+        #sounds-buttons {
+          display: grid;
+          column-gap: 3px;
+          row-gap: 3px;
+          grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+        
+        #sounds-buttons > button {
+          margin: 0 auto;
+          text-align: center;
+          font-size: 30px;
+          width: 400px;
+          height: 200px;
+          background: ${buttonBackgroundColor};
+          border-radius: 10px;
+          border: 3px solid;
+          margin: 3px;
+          align-items: center;
+          justify-content: center;
+          color: ${buttonFontColor};
+          border-color: ${buttonBorderColor};
+        }
+    `);
 });
 
 // Start the server
