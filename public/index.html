@@ -22,15 +22,17 @@
       <button type="submit">Upload</button>
     </form>
     <script>
+      function titleCase(fileName) {
+        return fileName.replace(
+          /\w\S*/g,
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+        );
+      }
+
       function cleanFileName(fileName) {
         // Remove the extension
         const fileWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
 
-        // Remove special characters (keep letters, numbers, spaces, dashes, and underscores)
-        //const sanitizedFileName = fileWithoutExtension.replace(
-        //  /[^a-zA-Z0-9 _-]/g,
-        //  "",
-        //);
         // Replace dashes and underscores with spaces
         const prettyFileName = fileWithoutExtension.replace(/[_-]/g, " ");
 
@@ -48,7 +50,8 @@
             soundsFiles.forEach((file) => {
               // Create a button for each sounds file
               const button = document.createElement("button");
-              button.textContent = cleanFileName(file);
+              const cleanName = cleanFileName(file);
+              button.textContent = titleCase(cleanName);
               button.onclick = () => {
                 const sounds = new Audio(`/sounds/${file}`);
                 sounds.play();
