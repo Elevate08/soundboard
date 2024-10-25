@@ -38,3 +38,10 @@ button_background_color=#0077b6
 button_font_color=#caf0f8
 button_border_color=#00b4d8
 ```
+
+## Configuration Variables
+
+```
+ENV MAX_AUDIO_DURATION=15
+ENV MAX_CONCURRENT_AUDIO=1
+```
